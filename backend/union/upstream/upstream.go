@@ -322,6 +322,39 @@ func (o *Object) Metadata(ctx context.Context) (fs.Metadata, error) {
 	return do.Metadata(ctx)
 }
 
+// Metadata returns metadata for an DirEntry
+//
+// It should return nil if there is no Metadata
+func (d *Directory) Metadata(ctx context.Context) (fs.Metadata, error) {
+	do, ok := d.Directory.(fs.Metadataer)
+	if !ok {
+		return nil, nil
+	}
+	return do.Metadata(ctx)
+}
+
+// SetMetadata sets metadata for an DirEntry
+//
+// It should return fs.ErrorNotImplemented if it can't set metadata
+func (d *Directory) SetMetadata(ctx context.Context, metadata fs.Metadata) error {
+	do, ok := d.Directory.(fs.SetMetadataer)
+	if !ok {
+		return fs.ErrorNotImplemented
+	}
+	return do.SetMetadata(ctx, metadata)
+}
+
+// SetModTime sets the metadata on the DirEntry to set the modification date
+//
+// If there is any other metadata it does not overwrite it.
+func (d *Directory) SetModTime(ctx context.Context, t time.Time) error {
+	do, ok := d.Directory.(fs.SetModTimer)
+	if !ok {
+		return fs.ErrorNotImplemented
+	}
+	return do.SetModTime(ctx, t)
+}
+
 // Writeback writes the object back and returns a new object
 //
 // If it returns nil, nil then the original object is OK
@@ -457,5 +490,6 @@ func (f *Fs) updateUsageCore(lock bool) error {
 
 // Check the interfaces are satisfied
 var (
-	_ fs.FullObject = (*Object)(nil)
+	_ fs.FullObject    = (*Object)(nil)
+	_ fs.FullDirectory = (*Directory)(nil)
 )

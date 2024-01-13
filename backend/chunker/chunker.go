@@ -821,8 +821,7 @@ func (f *Fs) processEntries(ctx context.Context, origEntries fs.DirEntries, dirP
 			}
 		case fs.Directory:
 			isSubdir[entry.Remote()] = true
-			wrapDir := fs.NewDirCopy(ctx, entry)
-			wrapDir.SetRemote(entry.Remote())
+			wrapDir := fs.NewDirWrapper(entry.Remote(), entry)
 			tempEntries = append(tempEntries, wrapDir)
 		default:
 			if f.opt.FailHard {
@@ -1571,6 +1570,14 @@ func (f *Fs) Mkdir(ctx context.Context, dir string) error {
 	return f.base.Mkdir(ctx, dir)
 }
 
+// MkdirMetadata makes the root directory of the Fs object
+func (f *Fs) MkdirMetadata(ctx context.Context, dir string, metadata fs.Metadata) (fs.Directory, error) {
+	if do := f.base.Features().MkdirMetadata; do != nil {
+		return do(ctx, dir, metadata)
+	}
+	return nil, fs.ErrorNotImplemented
+}
+
 // Rmdir removes the directory (container, bucket) if empty
 //
 // Return an error if it doesn't exist or isn't empty
@@ -1886,6 +1893,14 @@ func (f *Fs) DirMove(ctx context.Context, src fs.Fs, srcRemote, dstRemote string
 		return fs.ErrorCantDirMove
 	}
 	return do(ctx, srcFs.base, srcRemote, dstRemote)
+}
+
+// DirSetModTime sets the directory modtime for dir
+func (f *Fs) DirSetModTime(ctx context.Context, dir string, modTime time.Time) error {
+	if do := f.base.Features().DirSetModTime; do != nil {
+		return do(ctx, dir, modTime)
+	}
+	return fs.ErrorNotImplemented
 }
 
 // CleanUp the trash in the Fs
@@ -2548,6 +2563,7 @@ var (
 	_ fs.Copier          = (*Fs)(nil)
 	_ fs.Mover           = (*Fs)(nil)
 	_ fs.DirMover        = (*Fs)(nil)
+	_ fs.DirSetModTimer  = (*Fs)(nil)
 	_ fs.PutUncheckeder  = (*Fs)(nil)
 	_ fs.PutStreamer     = (*Fs)(nil)
 	_ fs.CleanUpper      = (*Fs)(nil)
