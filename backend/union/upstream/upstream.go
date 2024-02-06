@@ -325,8 +325,8 @@ func (o *Object) Metadata(ctx context.Context) (fs.Metadata, error) {
 // Metadata returns metadata for an DirEntry
 //
 // It should return nil if there is no Metadata
-func (d *Directory) Metadata(ctx context.Context) (fs.Metadata, error) {
-	do, ok := d.Directory.(fs.Metadataer)
+func (e *Directory) Metadata(ctx context.Context) (fs.Metadata, error) {
+	do, ok := e.Directory.(fs.Metadataer)
 	if !ok {
 		return nil, nil
 	}
@@ -336,8 +336,8 @@ func (d *Directory) Metadata(ctx context.Context) (fs.Metadata, error) {
 // SetMetadata sets metadata for an DirEntry
 //
 // It should return fs.ErrorNotImplemented if it can't set metadata
-func (d *Directory) SetMetadata(ctx context.Context, metadata fs.Metadata) error {
-	do, ok := d.Directory.(fs.SetMetadataer)
+func (e *Directory) SetMetadata(ctx context.Context, metadata fs.Metadata) error {
+	do, ok := e.Directory.(fs.SetMetadataer)
 	if !ok {
 		return fs.ErrorNotImplemented
 	}
@@ -347,8 +347,8 @@ func (d *Directory) SetMetadata(ctx context.Context, metadata fs.Metadata) error
 // SetModTime sets the metadata on the DirEntry to set the modification date
 //
 // If there is any other metadata it does not overwrite it.
-func (d *Directory) SetModTime(ctx context.Context, t time.Time) error {
-	do, ok := d.Directory.(fs.SetModTimer)
+func (e *Directory) SetModTime(ctx context.Context, t time.Time) error {
+	do, ok := e.Directory.(fs.SetModTimer)
 	if !ok {
 		return fs.ErrorNotImplemented
 	}

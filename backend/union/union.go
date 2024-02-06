@@ -967,18 +967,23 @@ func NewFs(ctx context.Context, name, root string, m configmap.Mapper) (fs.Fs, e
 	}
 	fs.Debugf(f, "actionPolicy = %T, createPolicy = %T, searchPolicy = %T", f.actionPolicy, f.createPolicy, f.searchPolicy)
 	var features = (&fs.Features{
-		CaseInsensitive:         true,
-		DuplicateFiles:          false,
-		ReadMimeType:            true,
-		WriteMimeType:           true,
-		CanHaveEmptyDirectories: true,
-		BucketBased:             true,
-		SetTier:                 true,
-		GetTier:                 true,
-		ReadMetadata:            true,
-		WriteMetadata:           true,
-		UserMetadata:            true,
-		PartialUploads:          true,
+		CaseInsensitive:          true,
+		DuplicateFiles:           false,
+		ReadMimeType:             true,
+		WriteMimeType:            true,
+		CanHaveEmptyDirectories:  true,
+		BucketBased:              true,
+		SetTier:                  true,
+		GetTier:                  true,
+		ReadMetadata:             true,
+		WriteMetadata:            true,
+		UserMetadata:             true,
+		ReadDirMetadata:          true,
+		WriteDirMetadata:         true,
+		WriteDirSetModTime:       true,
+		UserDirMetadata:          true,
+		DirModTimeUpdatesOnWrite: true,
+		PartialUploads:           true,
 	}).Fill(ctx, f)
 	canMove, slowHash := true, false
 	for _, f := range upstreams {
@@ -1054,6 +1059,7 @@ var (
 	_ fs.Mover           = (*Fs)(nil)
 	_ fs.DirMover        = (*Fs)(nil)
 	_ fs.DirSetModTimer  = (*Fs)(nil)
+	_ fs.MkdirMetadataer = (*Fs)(nil)
 	_ fs.DirCacheFlusher = (*Fs)(nil)
 	_ fs.ChangeNotifier  = (*Fs)(nil)
 	_ fs.Abouter         = (*Fs)(nil)

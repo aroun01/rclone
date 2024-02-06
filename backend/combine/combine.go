@@ -222,18 +222,23 @@ func NewFs(ctx context.Context, name, root string, m configmap.Mapper) (outFs fs
 	}
 	// check features
 	var features = (&fs.Features{
-		CaseInsensitive:         true,
-		DuplicateFiles:          false,
-		ReadMimeType:            true,
-		WriteMimeType:           true,
-		CanHaveEmptyDirectories: true,
-		BucketBased:             true,
-		SetTier:                 true,
-		GetTier:                 true,
-		ReadMetadata:            true,
-		WriteMetadata:           true,
-		UserMetadata:            true,
-		PartialUploads:          true,
+		CaseInsensitive:          true,
+		DuplicateFiles:           false,
+		ReadMimeType:             true,
+		WriteMimeType:            true,
+		CanHaveEmptyDirectories:  true,
+		BucketBased:              true,
+		SetTier:                  true,
+		GetTier:                  true,
+		ReadMetadata:             true,
+		WriteMetadata:            true,
+		UserMetadata:             true,
+		ReadDirMetadata:          true,
+		WriteDirMetadata:         true,
+		WriteDirSetModTime:       true,
+		UserDirMetadata:          true,
+		DirModTimeUpdatesOnWrite: true,
+		PartialUploads:           true,
 	}).Fill(ctx, f)
 	canMove := true
 	for _, u := range f.upstreams {
@@ -1141,6 +1146,7 @@ var (
 	_ fs.PutUncheckeder  = (*Fs)(nil)
 	_ fs.MergeDirser     = (*Fs)(nil)
 	_ fs.DirSetModTimer  = (*Fs)(nil)
+	_ fs.MkdirMetadataer = (*Fs)(nil)
 	_ fs.CleanUpper      = (*Fs)(nil)
 	_ fs.OpenWriterAter  = (*Fs)(nil)
 	_ fs.FullObject      = (*Object)(nil)

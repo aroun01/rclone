@@ -164,16 +164,21 @@ func NewFs(ctx context.Context, fsname, rpath string, cmap configmap.Mapper) (fs
 	}
 
 	stubFeatures := &fs.Features{
-		CanHaveEmptyDirectories: true,
-		IsLocal:                 true,
-		ReadMimeType:            true,
-		WriteMimeType:           true,
-		SetTier:                 true,
-		GetTier:                 true,
-		ReadMetadata:            true,
-		WriteMetadata:           true,
-		UserMetadata:            true,
-		PartialUploads:          true,
+		CanHaveEmptyDirectories:  true,
+		IsLocal:                  true,
+		ReadMimeType:             true,
+		WriteMimeType:            true,
+		SetTier:                  true,
+		GetTier:                  true,
+		ReadMetadata:             true,
+		WriteMetadata:            true,
+		UserMetadata:             true,
+		ReadDirMetadata:          true,
+		WriteDirMetadata:         true,
+		WriteDirSetModTime:       true,
+		UserDirMetadata:          true,
+		DirModTimeUpdatesOnWrite: true,
+		PartialUploads:           true,
 	}
 	f.features = stubFeatures.Fill(ctx, f).Mask(ctx, f.Fs).WrapsFs(f, f.Fs)
 
@@ -547,6 +552,7 @@ var (
 	_ fs.Wrapper         = (*Fs)(nil)
 	_ fs.MergeDirser     = (*Fs)(nil)
 	_ fs.DirSetModTimer  = (*Fs)(nil)
+	_ fs.MkdirMetadataer = (*Fs)(nil)
 	_ fs.DirCacheFlusher = (*Fs)(nil)
 	_ fs.ChangeNotifier  = (*Fs)(nil)
 	_ fs.PublicLinker    = (*Fs)(nil)

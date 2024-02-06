@@ -263,19 +263,24 @@ func NewFs(ctx context.Context, name, rpath string, m configmap.Mapper) (fs.Fs, 
 	// the features here are ones we could support, and they are
 	// ANDed with the ones from wrappedFs
 	f.features = (&fs.Features{
-		CaseInsensitive:         !cipher.dirNameEncrypt || cipher.NameEncryptionMode() == NameEncryptionOff,
-		DuplicateFiles:          true,
-		ReadMimeType:            false, // MimeTypes not supported with crypt
-		WriteMimeType:           false,
-		BucketBased:             true,
-		CanHaveEmptyDirectories: true,
-		SetTier:                 true,
-		GetTier:                 true,
-		ServerSideAcrossConfigs: opt.ServerSideAcrossConfigs,
-		ReadMetadata:            true,
-		WriteMetadata:           true,
-		UserMetadata:            true,
-		PartialUploads:          true,
+		CaseInsensitive:          !cipher.dirNameEncrypt || cipher.NameEncryptionMode() == NameEncryptionOff,
+		DuplicateFiles:           true,
+		ReadMimeType:             false, // MimeTypes not supported with crypt
+		WriteMimeType:            false,
+		BucketBased:              true,
+		CanHaveEmptyDirectories:  true,
+		SetTier:                  true,
+		GetTier:                  true,
+		ServerSideAcrossConfigs:  opt.ServerSideAcrossConfigs,
+		ReadMetadata:             true,
+		WriteMetadata:            true,
+		UserMetadata:             true,
+		ReadDirMetadata:          true,
+		WriteDirMetadata:         true,
+		WriteDirSetModTime:       true,
+		UserDirMetadata:          true,
+		DirModTimeUpdatesOnWrite: true,
+		PartialUploads:           true,
 	}).Fill(ctx, f).Mask(ctx, wrappedFs).WrapsFs(f, wrappedFs)
 
 	return f, err
@@ -1236,6 +1241,7 @@ var (
 	_ fs.Wrapper         = (*Fs)(nil)
 	_ fs.MergeDirser     = (*Fs)(nil)
 	_ fs.DirSetModTimer  = (*Fs)(nil)
+	_ fs.MkdirMetadataer = (*Fs)(nil)
 	_ fs.DirCacheFlusher = (*Fs)(nil)
 	_ fs.ChangeNotifier  = (*Fs)(nil)
 	_ fs.PublicLinker    = (*Fs)(nil)
