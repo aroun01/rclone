@@ -30,7 +30,6 @@ import (
 	"github.com/rclone/rclone/fs/config"
 	"github.com/rclone/rclone/fs/filter"
 	"github.com/rclone/rclone/fs/fserrors"
-	"github.com/rclone/rclone/fs/fshttp"
 	"github.com/rclone/rclone/fs/hash"
 	"github.com/rclone/rclone/fs/object"
 	"github.com/rclone/rclone/fs/walk"
@@ -1647,8 +1646,10 @@ type copyURLFunc func(ctx context.Context, dstFileName string, in io.ReadCloser,
 
 // copyURLFn copies the data from the url to the function supplied
 func copyURLFn(ctx context.Context, dstFileName string, url string, autoFilename, dstFileNameFromHeader bool, fn copyURLFunc) (err error) {
-	client := fshttp.NewClient(ctx)
-	resp, err := client.Get(url)
+	// FIXME test go http transport
+	resp, err := http.Get(url)
+	// client := fshttp.NewClient(ctx)
+	// resp, err := client.Get(url)
 	if err != nil {
 		return err
 	}

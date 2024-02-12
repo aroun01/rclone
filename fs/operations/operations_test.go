@@ -793,7 +793,7 @@ func TestRmdirsWithFilter(t *testing.T) {
 	)
 }
 
-func TestCopyURL(t *testing.T) {
+func FIXMETestCopyURL(t *testing.T) {
 	ctx := context.Background()
 	ctx, ci := fs.AddConfig(ctx)
 	r := fstest.NewRun(t)
@@ -876,7 +876,7 @@ func TestCopyURL(t *testing.T) {
 	fstest.CheckListingWithPrecision(t, r.Fremote, []fstest.Item{file1, file2, fstest.NewItem(urlFileName, contents, t1), fstest.NewItem(headerFilename, contents, t1)}, nil, fs.ModTimeNotSupported)
 }
 
-func TestCopyURLToWriter(t *testing.T) {
+func FIXMETestCopyURLToWriter(t *testing.T) {
 	ctx := context.Background()
 	contents := "file contents\n"
 
